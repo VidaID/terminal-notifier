@@ -88,11 +88,8 @@ InstallFakeBundleIdentifierHook()
          "                          Old notifications with the same ID will be removed.\n" \
          "       -activate ID       The bundle identifier of the application to activate when the user clicks the notification.\n" \
          "       -sender ID         The bundle identifier of the application that should be shown as the sender, including its icon.\n" \
-         "       -appIcon URL       The URL of a image to display instead of the application icon (Mavericks+ only)\n" \
-         "       -contentImage URL  The URL of a image to display attached to the notification (Mavericks+ only)\n" \
          "       -open URL          The URL of a resource to open when the user clicks the notification.\n" \
          "       -execute COMMAND   A shell command to perform when the user clicks the notification.\n" \
-         "       -ignoreDnD         Send notification even if Do Not Disturb is enabled.\n" \
          "\n" \
          "When the user activates a notification, the results are logged to the system logs.\n" \
          "Use Console.app to view these logs.\n" \
@@ -181,8 +178,6 @@ InstallFakeBundleIdentifierHook()
       if (defaults[@"activate"]) options[@"bundleID"]         = defaults[@"activate"];
       if (defaults[@"group"])    options[@"groupID"]          = defaults[@"group"];
       if (defaults[@"execute"])  options[@"command"]          = defaults[@"execute"];
-      if (defaults[@"appIcon"])  options[@"appIcon"]          = defaults[@"appIcon"];
-      if (defaults[@"contentImage"]) options[@"contentImage"] = defaults[@"contentImage"];
 
       if (defaults[@"open"]) {
         NSURL *url = [NSURL URLWithString:defaults[@"open"]];
@@ -194,10 +189,6 @@ InstallFakeBundleIdentifierHook()
         }
       }
 
-      if([[[NSProcessInfo processInfo] arguments] containsObject:@"-ignoreDnD"] == true) {
-        options[@"ignoreDnD"] = @YES;
-      }
-
       [self deliverNotificationWithTitle:defaults[@"title"] ?: @"Terminal"
                                 subtitle:subtitle
                                  message:message
@@ -205,16 +196,6 @@ InstallFakeBundleIdentifierHook()
                                    sound:sound];
     }
   }
-}
-
-- (NSImage*)getImageFromURL:(NSString *) url;
-{
-  NSURL *imageURL = [NSURL URLWithString:url];
-  if([[imageURL scheme] length] == 0){
-    // Prefix 'file://' if no scheme
-    imageURL = [NSURL fileURLWithPath:url];
-  }
-  return [[NSImage alloc] initWithContentsOfURL:imageURL];
 }
 
 /**
@@ -246,20 +227,8 @@ InstallFakeBundleIdentifierHook()
   userNotification.informativeText = message;
   userNotification.userInfo = options;
 
-  if(options[@"appIcon"]){
-    [userNotification setValue:[self getImageFromURL:options[@"appIcon"]] forKey:@"_identityImage"];
-    [userNotification setValue:@(false) forKey:@"_identityImageHasBorder"];
-  }
-  if(options[@"contentImage"]){
-    userNotification.contentImage = [self getImageFromURL:options[@"contentImage"]];
-  }
-
   if (sound != nil) {
     userNotification.soundName = [sound isEqualToString: @"default"] ? NSUserNotificationDefaultSoundName : sound ;
-  }
-
-  if(options[@"ignoreDnD"]){
-    [userNotification setValue:@YES forKey:@"_ignoresDoNotDisturb"];
   }
 
   NSUserNotificationCenter *center = [NSUserNotificationCenter defaultUserNotificationCenter];

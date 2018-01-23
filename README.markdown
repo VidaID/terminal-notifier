@@ -20,7 +20,7 @@ Sticking to two smaller specialized tools will hopefully make them easier to mai
 * It is currently packaged as an application bundle, because `NSUserNotification`
   does not work from a ‘Foundation tool’. [radar://11956694](radar://11956694)
 
-* If you intend to package terminal-notifier with your app to distribute it on the Mac App Store, please use 1.5.2; version 1.6.0+ uses a private method override, which is not allowed in the App Store Guidelines.
+* If you intend to package vida-notifier with your app to distribute it on the Mac App Store, no problem. This is a fork of the original terminal-notifier with all private methods removed to comply with Apple standards.
 
 * If you're using macOS < 10.10 you should use terminal-notifier 1.6.3.
 
@@ -195,22 +195,6 @@ For information on the `ID`, see the `-activate` option.
 
 -------------------------------------------------------------------------------
 
-`-appIcon PATH`
-
-Specify an image `PATH` to display instead of the application icon.
-
-**WARNING: This option is subject to change, since it relies on a private method.**
-
--------------------------------------------------------------------------------
-
-`-contentImage PATH`
-
-Specify an image `PATH` to attach inside of the notification.
-
-**WARNING: This option is subject to change since it relies on a private method.**
-
--------------------------------------------------------------------------------
-
 `-open URL`
 
 Open `URL` when the user clicks the notification. This can be a web or file URL,
@@ -221,14 +205,6 @@ or any custom URL scheme.
 `-execute COMMAND`
 
 Run the shell command `COMMAND` when the user clicks the notification.
-
--------------------------------------------------------------------------------
-
-`-ignoreDnD`
-
-Ignore Do Not Disturb settings and unconditionally show the notification.
-
-**WARNING: This option is subject to change since it relies on a private method.**
 
 ## License
 
